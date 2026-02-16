@@ -1,0 +1,473 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vocabulary Builder: Success & Happiness</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --accent-success: #27ae60;
+            --accent-happiness: #f39c12;
+            --bg-color: #f4f7f6;
+            --card-bg: #ffffff;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-color);
+            margin: 0;
+            padding: 0;
+            color: var(--text-color);
+        }
+
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(135deg, #1a2a6c, #1E55E6, #3B455C);
+            color: white;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+
+        h1 { margin: 0; font-weight: 300; letter-spacing: 2px; }
+
+        /* Tabs Styling */
+        .tabs {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .tab-btn {
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            border: none;
+            border-radius: 30px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: bold;
+            background-color: #ddd;
+            color: #555;
+        }
+
+        .tab-btn.active-success {
+            background-color: var(--accent-success);
+            color: white;
+            box-shadow: 0 4px 15px rgba(39, 174, 96, 0.4);
+        }
+
+        .tab-btn.active-happiness {
+            background-color: var(--accent-happiness);
+            color: white;
+            box-shadow: 0 4px 15px rgba(243, 156, 18, 0.4);
+        }
+
+        /* Content Sections */
+        .content-section {
+            display: none; /* Hidden by default */
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .content-section.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Subcategories */
+        .subcategory {
+            margin-bottom: 40px;
+        }
+
+        .subcategory h3 {
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 10px;
+            color: #666;
+            font-size: 1.2rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        /* Word Card Layout */
+        .word-card {
+            background: var(--card-bg);
+            border-radius: 12px;
+            padding: 20px;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+            cursor: pointer;
+            transition: transform 0.2s, box-shadow 0.2s;
+            position: relative;
+            overflow: hidden;
+            display: grid;
+            /* UPDATED: Word (Left) takes 1 part, Definition (Right) takes 2 parts */
+            grid-template-columns: 1fr 2fr; 
+            gap: 20px;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .word-card:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        /* The Word (Left Side) */
+        .word-text {
+            font-size: 1.4rem;
+            font-weight: 700;
+            text-align: left; /* UPDATED: Align Left */
+            color: var(--primary-color);
+            transition: color 0.3s;
+            z-index: 2; /* Ensure it stays on top */
+        }
+
+        /* The Definition (Right Side) */
+        .definition {
+            font-size: 0.95rem;
+            color: #666;
+            line-height: 1.5;
+            opacity: 0; /* Hidden by default */
+            /* UPDATED: Slide in from the right */
+            transform: translateX(20px); 
+            transition: all 0.4s ease;
+            /* UPDATED: Border on the left side of the definition */
+            border-left: 1px solid transparent;
+            padding-left: 15px;
+        }
+
+        /* Active State (When clicked) */
+        .word-card.revealed {
+            background-color: #fff;
+            border-right: 5px solid var(--primary-color); /* Highlight right edge */
+        }
+
+        .word-card.revealed .definition {
+            opacity: 1;
+            transform: translateX(0);
+            border-left: 1px solid #eee;
+        }
+
+        .word-card.revealed .word-text {
+            color: #888; /* Dim the word when revealed */
+            font-size: 1.2rem;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 600px) {
+            .word-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 10px;
+            }
+            .word-text {
+                text-align: center;
+                margin-bottom: 5px;
+            }
+            .definition {
+                border-left: none;
+                padding-left: 0;
+                border-top: 1px solid #eee;
+                padding-top: 10px;
+                transform: translateY(10px); /* Slide from bottom on mobile */
+            }
+            .word-card.revealed .definition {
+                transform: translateY(0);
+            }
+        }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>📚 Vocabulary Builder</h1>
+    <p>Click a word to reveal its meaning</p>
+</header>
+
+<div class="tabs">
+    <button class="tab-btn active-success" onclick="openTab('success')">🏆 Success</button>
+    <button class="tab-btn" onclick="openTab('happiness')">☀️ Happiness</button>
+</div>
+
+<!-- SUCCESS TAB CONTENT -->
+<main id="success" class="content-section active">
+    
+    <div class="subcategory">
+        <h3>🏆 Notions & Concepts</h3>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">A milestone</div>
+            <div class="definition">An important event in development. (Syn: landmark, breakthrough)</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">A hallmark of success</div>
+            <div class="definition">A distinctive feature or characteristic of being successful.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Trappings of success</div>
+            <div class="definition">The outward signs or symbols of success (money, cars).</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Self-actualisation</div>
+            <div class="definition">Realising one's full potential (Maslow's hierarchy).</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Intrinsic motivation</div>
+            <div class="definition">Drive stemming from internal satisfaction.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Extrinsic motivation</div>
+            <div class="definition">Drive fuelled by external rewards (praise, status).</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Complacency</div>
+            <div class="definition">Smug satisfaction leading to a lack of effort. (Syn: inertia)</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Adversity</div>
+            <div class="definition">A difficult or unpleasant situation.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Resilience</div>
+            <div class="definition">The capacity to recover quickly from difficulties.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">A double-edged sword</div>
+            <div class="definition">Something with both positive and negative consequences.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Trade-off</div>
+            <div class="definition">A compromise between two competing things.</div>
+        </div>
+    </div>
+
+    <div class="subcategory">
+        <h3>⚙️ Verbs & Actions</h3>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To bring to fruition</div>
+            <div class="definition">To make a plan or project successful.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To circumvent</div>
+            <div class="definition">To find a way around an obstacle, often cleverly.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To soldier on</div>
+            <div class="definition">To persevere through difficulty.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To decouple</div>
+            <div class="definition">To separate or disassociate one thing from another.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To jeopardize</div>
+            <div class="definition">To put something at risk.</div>
+        </div>
+    </div>
+
+    <div class="subcategory">
+        <h3>🗣️ Idioms & Set Expressions</h3>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To climb the ladder</div>
+            <div class="definition">To progressively advance in career or status.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To rest on one's laurels</div>
+            <div class="definition">To stop trying because of past success.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To live up to one's potential</div>
+            <div class="definition">To achieve as much as your ability allows.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To fall prey to</div>
+            <div class="definition">To be influenced or harmed by something bad.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To fall short of</div>
+            <div class="definition">To fail to reach a standard or expectation.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To hit the ceiling</div>
+            <div class="definition">To react with extreme anger or frustration.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To settle for less</div>
+            <div class="definition">To accept less than one deserves.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To lose sight of what matters</div>
+            <div class="definition">To forget important priorities.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To drift through life</div>
+            <div class="definition">To live without direction or purpose.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To gild the lily</div>
+            <div class="definition">To try to improve something already perfect (often ruining it).</div>
+        </div>
+    </div>
+
+    <div class="subcategory">
+        <h3>📝 Adjectives</h3>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Hard-won</div>
+            <div class="definition">Achieved through great effort or difficulty.</div>
+        </div>
+    </div>
+</main>
+
+<!-- HAPPINESS TAB CONTENT -->
+<main id="happiness" class="content-section">
+
+    <div class="subcategory">
+        <h3>☀️ States of Mind & Notions</h3>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Unadulterated joy</div>
+            <div class="definition">Pure, complete, and absolute joy.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Exuberance</div>
+            <div class="definition">Quality of being full of energy and excitement.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Blissfulness</div>
+            <div class="definition">A state of extreme happiness or contentment.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Mirth</div>
+            <div class="definition">A feeling of amusement or joy.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Indomitable optimism</div>
+            <div class="definition">Hope that cannot be defeated.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Cautious optimism</div>
+            <div class="definition">Being happy about the future while staying realistic.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Wry amusement</div>
+            <div class="definition">A high-level, slightly cynical form of entertainment.</div>
+        </div>
+    </div>
+
+    <div class="subcategory">
+        <h3>⚙️ Verbs & Actions</h3>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To savor</div>
+            <div class="definition">To fully enjoy/prolong a positive experience.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To bask in (something)</div>
+            <div class="definition">To take great pleasure in an achievement.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To rediscover (ourselves/purpose)</div>
+            <div class="definition">To find meaning again after adversity.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To perk up</div>
+            <div class="definition">To suddenly become more cheerful.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To fall back on</div>
+            <div class="definition">To rely on a habit/hobby for happiness during tough times.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To snap out of it</div>
+            <div class="definition">To force oneself to stop being moody.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To buoy (someone) up</div>
+            <div class="definition">To keep someone's spirits high.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To bottle up (emotions)</div>
+            <div class="definition">To hide unhappiness until it explodes.</div>
+        </div>
+    </div>
+
+    <div class="subcategory">
+        <h3>🗣️ Idioms & Set Expressions</h3>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To be on cloud nine</div>
+            <div class="definition">To be extremely happy and excited.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To be a shadow of one's former self</div>
+            <div class="definition">To be less happy/successful than before.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To keep a stiff upper lip</div>
+            <div class="definition">To hide emotions during difficult times.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To be full of beans</div>
+            <div class="definition">To be high-energy and very happy.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To have everything going for you</div>
+            <div class="definition">To have all possible advantages.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To go through the motions</div>
+            <div class="definition">To live without emotional engagement.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">Comfortable in one's own skin</div>
+            <div class="definition">Confident and at peace with oneself.</div>
+        </div>
+        <div class="word-card" onclick="toggleCard(this)">
+            <div class="word-text">To be in a good place</div>
+            <div class="definition">To be mentally healthy and stable.</div>
+        </div>
+    </div>
+</main>
+
+<script>
+    // Tab Switching Logic
+    function openTab(tabName) {
+        // Hide all sections
+        const sections = document.querySelectorAll('.content-section');
+        sections.forEach(section => {
+            section.classList.remove('active');
+        });
+
+        // Reset buttons
+        const buttons = document.querySelectorAll('.tab-btn');
+        buttons.forEach(btn => {
+            btn.classList.remove('active-success', 'active-happiness');
+        });
+
+        // Show selected section
+        document.getElementById(tabName).classList.add('active');
+
+        // Highlight active button
+        if (tabName === 'success') {
+            buttons[0].classList.add('active-success');
+        } else {
+            buttons[1].classList.add('active-happiness');
+        }
+    }
+
+    // Word Reveal Logic
+    function toggleCard(card) {
+        // Toggle the 'revealed' class on the clicked card
+        card.classList.toggle('revealed');
+    }
+</script>
+
+</body>
+</html>
